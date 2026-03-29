@@ -202,6 +202,63 @@ body {
   display: flex;
 }
 
+/* URL tab */
+#tab-url {
+  padding: 20px;
+  gap: 16px;
+}
+
+.url-input-area {
+  display: flex;
+  gap: 10px;
+}
+
+.url-input-area input {
+  flex: 1;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  font-family: inherit;
+}
+
+.url-input-area input:focus {
+  border-color: rgba(231, 76, 60, 0.4);
+}
+
+.url-input-area input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.url-input-area .btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.url-status {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  min-height: 24px;
+  padding: 4px 0;
+}
+
+.url-status.error {
+  color: #E74C3C;
+}
+
+.url-hint {
+  margin-top: 12px;
+}
+
+.url-hint p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.2);
+  line-height: 1.5;
+}
+
 /* Paste tab */
 #tab-paste {
   padding: 20px;

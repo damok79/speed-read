@@ -28,6 +28,7 @@ function unlock() {
   sessionStorage.setItem('unlocked', 'true');
   document.getElementById('lock-screen').classList.add('hidden');
   document.getElementById('app').classList.add('active');
+  handlePendingUrl();
 }
 
 function lock() {
@@ -168,6 +169,105 @@ document.querySelectorAll('.tabs .tab').forEach(tab => {
     document.getElementById('tab-' + target).classList.add('active');
     if (target === 'readwise') checkReadwiseAuth();
   });
+});
+
+// ---- URL Reading ----
+
+// Extract Readwise Reader document ID from URL
+function getReadwiseDocId(url) {
+  const match = url.match(/read\.readwise\.io\/.*\/read\/([a-z0-9]+)$/i);
+  return match ? match[1] : null;
+}
+
+// Extract readable text from HTML
+function extractTextFromHtml(html, url) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Remove scripts, styles, nav, footer, ads
+  doc.querySelectorAll('script, style, nav, footer, header, aside, .ad, .ads, .sidebar, .navigation, .menu, .comments, [role="navigation"], [role="banner"], [role="complementary"]').forEach(el => el.remove());
+
+  // Try semantic selectors first
+  const selectors = ['article', '[role="main"]', 'main', '.post-content', '.article-content', '.entry-content', '.content'];
+  for (const sel of selectors) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 200) {
+      return el.textContent.replace(/\s+/g, ' ').trim();
+    }
+  }
+
+  // Fallback: body text
+  const body = doc.body;
+  if (body) {
+    return body.textContent.replace(/\s+/g, ' ').trim();
+  }
+  return '';
+}
+
+// Get page title from HTML
+function extractTitleFromHtml(html) {
+  const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  return match ? match[1].replace(/\s+/g, ' ').trim() : '';
+}
+
+async function fetchAndReadUrl(url) {
+  const statusEl = document.getElementById('url-status');
+  const btn = document.getElementById('btn-read-url');
+
+  btn.disabled = true;
+  statusEl.textContent = 'Fetching article...';
+  statusEl.className = 'url-status';
+
+  try {
+    // Check if it's a Readwise URL
+    const rwDocId = getReadwiseDocId(url);
+    if (rwDocId && api.getToken()) {
+      statusEl.textContent = 'Fetching from Readwise...';
+      const details = await api.getDocument(rwDocId);
+      if (details && details.content) {
+        const text = ReadwiseAPI.markdownToText(details.content);
+        if (text) {
+          openReader(text, details.title || 'Readwise Article');
+          return;
+        }
+      }
+      statusEl.textContent = 'No Readwise content, trying direct fetch...';
+    }
+
+    // Fetch via CORS proxy
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    const resp = await fetch(proxyUrl);
+    if (!resp.ok) throw new Error('Failed to fetch page (' + resp.status + ')');
+
+    const html = await resp.text();
+    const text = extractTextFromHtml(html, url);
+
+    if (!text || text.length < 50) {
+      throw new Error('Could not extract readable text from this page');
+    }
+
+    const title = extractTitleFromHtml(html) || new URL(url).hostname;
+    openReader(text, title);
+  } catch (e) {
+    statusEl.textContent = e.message;
+    statusEl.className = 'url-status error';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('btn-read-url').addEventListener('click', () => {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) return;
+  fetchAndReadUrl(url);
+});
+
+// Allow Enter key to submit URL
+document.getElementById('url-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('btn-read-url').click();
+  }
 });
 
 // ---- Paste & Read ----
@@ -381,6 +481,25 @@ document.getElementById('btn-reset-all').addEventListener('click', () => {
   }
 });
 
+// ---- URL Parameter Handling ----
+
+let pendingUrl = null;
+
+function handlePendingUrl() {
+  if (!pendingUrl) return;
+  const url = pendingUrl;
+  pendingUrl = null;
+
+  // Pre-fill the URL input and auto-fetch
+  document.getElementById('url-input').value = url;
+
+  // Clean URL params from address bar
+  history.replaceState(null, '', window.location.pathname);
+
+  // Small delay so the UI renders first
+  setTimeout(() => fetchAndReadUrl(url), 200);
+}
+
 // ---- Init ----
 
 function escapeHtml(str) {
@@ -390,13 +509,20 @@ function escapeHtml(str) {
 }
 
 function init() {
+  // Check for ?url= parameter
+  const params = new URLSearchParams(window.location.search);
+  const urlParam = params.get('url');
+  if (urlParam) {
+    pendingUrl = urlParam;
+  }
+
   if (!hasPinSet()) {
     pinMode = 'setup';
     document.getElementById('lock-subtitle').textContent = 'Choose a 4-digit PIN';
   } else if (isUnlocked()) {
     unlock();
   }
-  // else: show lock screen (default)
+  // else: show lock screen (default), pendingUrl will be handled after PIN entry
 }
 
 // Register service worker

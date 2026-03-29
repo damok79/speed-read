@@ -51,12 +51,26 @@
     </div>
 
     <div class="tabs">
-      <div class="tab active" data-tab="paste">Paste Text</div>
+      <div class="tab active" data-tab="url">Read URL</div>
+      <div class="tab" data-tab="paste">Paste Text</div>
       <div class="tab" data-tab="readwise">Readwise</div>
     </div>
 
+    <!-- Read URL Tab -->
+    <div class="tab-content active" id="tab-url">
+      <div class="url-input-area">
+        <input type="url" id="url-input" placeholder="Paste article URL here..." autocapitalize="none" autocorrect="off">
+        <button class="btn btn-primary" id="btn-read-url">Speed Read</button>
+      </div>
+      <div class="url-status" id="url-status"></div>
+      <div class="url-hint">
+        <p>Paste any article URL to extract and speed-read it.</p>
+        <p>Readwise Reader URLs use the API for clean content.</p>
+      </div>
+    </div>
+
     <!-- Paste Text Tab -->
-    <div class="tab-content active" id="tab-paste">
+    <div class="tab-content" id="tab-paste">
       <textarea id="paste-area" placeholder="Paste or type text here to speed read..."></textarea>
       <div class="paste-actions">
         <button class="btn btn-primary" id="btn-read-paste">Start Reading</button>
