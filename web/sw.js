@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speed-read-v1';
+const CACHE_NAME = 'speed-read-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -25,12 +25,19 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Network-first for API calls, cache-first for app assets
-  if (e.request.url.includes('readwise.io')) {
+  // Skip CORS proxy and API calls
+  if (e.request.url.includes('readwise.io') || e.request.url.includes('allorigins.win')) {
     e.respondWith(fetch(e.request));
     return;
   }
+  // Network-first for app assets — always get latest, fall back to cache offline
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    fetch(e.request)
+      .then(resp => {
+        const clone = resp.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        return resp;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
