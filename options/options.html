@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speed Read - Settings</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      padding: 40px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+    }
+
+    .section h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    input:focus {
+      border-color: rgba(231, 76, 60, 0.5);
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.25);
+      margin-top: -8px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .help-text a {
+      color: #E74C3C;
+      text-decoration: none;
+    }
+
+    .help-text a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      background: #E74C3C;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: #c0392b;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    .status.success { color: #2ecc71; }
+    .status.error { color: #E74C3C; }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .row > * {
+      flex: 1;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      margin: 0;
+    }
+
+    .slider-value {
+      min-width: 60px;
+      text-align: right;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+    }
+
+    .keyboard-shortcuts {
+      margin-top: 8px;
+    }
+
+    .shortcut {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .shortcut:last-child { border-bottom: none; }
+
+    .shortcut-key {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .shortcut-desc {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Speed Read Settings</h1>
+
+  <div class="section">
+    <h2>Readwise</h2>
+    <label>Access Token</label>
+    <input type="password" id="readwise-token" placeholder="Paste your Readwise access token">
+    <p class="help-text">
+      Get your token at <a href="https://readwise.io/access_token" target="_blank">readwise.io/access_token</a>
+    </p>
+    <div class="row">
+      <button id="save-token">Save Token</button>
+      <button id="test-token" class="btn-secondary">Test Connection</button>
+    </div>
+    <div id="token-status" class="status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Reading</h2>
+    <label>Default Speed (WPM)</label>
+    <div class="slider-row">
+      <input type="range" id="default-wpm" min="100" max="1200" step="50" value="300">
+      <span class="slider-value" id="wpm-value">300</span>
+    </div>
+
+    <label>Font Size (px)</label>
+    <div class="slider-row">
+      <input type="range" id="font-size" min="36" max="120" step="4" value="72">
+      <span class="slider-value" id="font-value">72</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="keyboard-shortcuts">
+      <div class="shortcut">
+        <span class="shortcut-desc">Play / Pause</span>
+        <span class="shortcut-key">Space</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Previous sentence</span>
+        <span class="shortcut-key">Left</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Next sentence</span>
+        <span class="shortcut-key">Right</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Increase speed</span>
+        <span class="shortcut-key">Up</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Decrease speed</span>
+        <span class="shortcut-key">Down</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Reset to start</span>
+        <span class="shortcut-key">R</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Close reader</span>
+        <span class="shortcut-key">Esc</span>
+      </div>
+      <div class="shortcut">
+        <span class="shortcut-desc">Activate on page</span>
+        <span class="shortcut-key">Alt+R</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="../lib/readwise.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

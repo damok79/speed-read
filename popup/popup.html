@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="popup">
+    <div id="header">
+      <h1>Speed Read</h1>
+      <button id="settings-btn" title="Settings">&#9881;</button>
+    </div>
+
+    <div id="tabs">
+      <button class="tab active" data-tab="page">This Page</button>
+      <button class="tab" data-tab="readwise">Readwise</button>
+    </div>
+
+    <!-- This Page tab -->
+    <div id="tab-page" class="tab-content active">
+      <button id="read-page-btn">
+        <span class="btn-icon">&#9654;</span>
+        <span>Speed Read This Page</span>
+      </button>
+      <p class="hint">Or select text first, then click to read only the selection</p>
+    </div>
+
+    <!-- Readwise tab -->
+    <div id="tab-readwise" class="tab-content">
+      <div id="readwise-auth" class="hidden">
+        <p>Connect your Readwise account to browse saved articles.</p>
+        <button id="connect-readwise-btn">Connect Readwise</button>
+      </div>
+
+      <div id="readwise-browser" class="hidden">
+        <div id="search-bar">
+          <input type="text" id="search-input" placeholder="Search articles...">
+        </div>
+
+        <div id="location-tabs">
+          <button class="loc-tab active" data-location="new">Inbox</button>
+          <button class="loc-tab" data-location="later">Later</button>
+          <button class="loc-tab" data-location="shortlist">Shortlist</button>
+          <button class="loc-tab" data-location="archive">Archive</button>
+        </div>
+
+        <div id="articles-list">
+          <div id="loading" class="hidden">Loading...</div>
+          <div id="articles"></div>
+          <button id="load-more" class="hidden">Load more</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-bar"></div>
+  </div>
+
+  <script src="../lib/readwise.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
