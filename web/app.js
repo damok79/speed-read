@@ -234,12 +234,28 @@ async function fetchAndReadUrl(url) {
       statusEl.textContent = 'No Readwise content, trying direct fetch...';
     }
 
-    // Fetch via CORS proxy
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-    const resp = await fetch(proxyUrl);
-    if (!resp.ok) throw new Error('Failed to fetch page (' + resp.status + ')');
+    // Fetch via CORS proxy (try multiple)
+    let html = null;
+    const proxies = [
+      (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+      (u) => 'https://corsproxy.io/?' + encodeURIComponent(u),
+    ];
 
-    const html = await resp.text();
+    for (const makeProxy of proxies) {
+      try {
+        statusEl.textContent = 'Fetching article...';
+        const resp = await fetch(makeProxy(url));
+        if (resp.ok) {
+          html = await resp.text();
+          break;
+        }
+      } catch (proxyErr) {
+        // Try next proxy
+      }
+    }
+
+    if (!html) throw new Error('Could not fetch the page. The site may block external access.');
+
     const text = extractTextFromHtml(html, url);
 
     if (!text || text.length < 50) {
@@ -257,8 +273,11 @@ async function fetchAndReadUrl(url) {
 }
 
 document.getElementById('btn-read-url').addEventListener('click', () => {
-  const url = document.getElementById('url-input').value.trim();
+  let url = document.getElementById('url-input').value.trim();
   if (!url) return;
+  // Auto-add https:// if missing
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  document.getElementById('url-input').value = url;
   fetchAndReadUrl(url);
 });
 

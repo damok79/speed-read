@@ -208,34 +208,32 @@ body {
   gap: 16px;
 }
 
-.url-input-area {
-  display: flex;
-  gap: 10px;
-}
-
-.url-input-area input {
-  flex: 1;
-  padding: 14px 16px;
+#url-input {
+  width: 100%;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  border-radius: 12px;
   color: #fff;
-  font-size: 15px;
+  font-size: 17px;
   outline: none;
   font-family: inherit;
+  min-height: 56px;
 }
 
-.url-input-area input:focus {
+#url-input:focus {
   border-color: rgba(231, 76, 60, 0.4);
 }
 
-.url-input-area input::placeholder {
+#url-input::placeholder {
   color: rgba(255, 255, 255, 0.2);
 }
 
-.url-input-area .btn {
-  white-space: nowrap;
-  flex-shrink: 0;
+#btn-read-url {
+  width: 100%;
+  padding: 16px;
+  font-size: 17px;
+  min-height: 56px;
 }
 
 .url-status {
@@ -250,7 +248,7 @@ body {
 }
 
 .url-hint {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .url-hint p {
