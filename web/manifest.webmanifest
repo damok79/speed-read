@@ -2,7 +2,7 @@
   "name": "Speed Read",
   "short_name": "SpeedRead",
   "description": "RSVP speed reading with Readwise integration",
-  "start_url": "/speed-read/web/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#111111",
   "theme_color": "#E74C3C",
