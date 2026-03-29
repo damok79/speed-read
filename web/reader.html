@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#111111">
+  <title>Speed Read</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="reader.css">
+</head>
+<body>
+  <div id="reader">
+    <div id="title-bar">
+      <span id="article-title"></span>
+      <button id="close-btn" title="Close (Esc)">&times;</button>
+    </div>
+
+    <div id="display-area">
+      <div id="guide-top" class="guide-line"></div>
+      <div id="word-container">
+        <span id="word-before"></span><span id="word-orp"></span><span id="word-after"></span>
+      </div>
+      <div id="guide-bottom" class="guide-line"></div>
+    </div>
+
+    <div id="controls">
+      <div id="controls-left">
+        <button id="btn-prev" title="Previous sentence">&#9664;&#9664;</button>
+        <button id="btn-play" title="Play/Pause">&#9654;</button>
+        <button id="btn-next" title="Next sentence">&#9654;&#9654;</button>
+      </div>
+
+      <div id="controls-center">
+        <input type="range" id="progress-bar" min="0" max="100" value="0" title="Progress">
+        <div id="progress-info">
+          <span id="word-count">0 / 0</span>
+        </div>
+      </div>
+
+      <div id="controls-right">
+        <div id="wpm-control">
+          <button id="wpm-down" title="Decrease WPM">-</button>
+          <span id="wpm-display">300 wpm</span>
+          <button id="wpm-up" title="Increase WPM">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="reader.js"></script>
+</body>
+</html>

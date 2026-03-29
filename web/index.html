@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#111111">
+  <title>Speed Read</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PIN Lock Screen -->
+  <div id="lock-screen">
+    <h1>Speed Read</h1>
+    <p class="subtitle" id="lock-subtitle">Enter PIN</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+    <div class="pin-pad" id="pin-pad">
+      <button class="pin-key" data-key="1">1</button>
+      <button class="pin-key" data-key="2">2</button>
+      <button class="pin-key" data-key="3">3</button>
+      <button class="pin-key" data-key="4">4</button>
+      <button class="pin-key" data-key="5">5</button>
+      <button class="pin-key" data-key="6">6</button>
+      <button class="pin-key" data-key="7">7</button>
+      <button class="pin-key" data-key="8">8</button>
+      <button class="pin-key" data-key="9">9</button>
+      <button class="pin-key empty"></button>
+      <button class="pin-key" data-key="0">0</button>
+      <button class="pin-key backspace" data-key="del">&#9003;</button>
+    </div>
+    <p class="pin-status" id="pin-status"></p>
+  </div>
+
+  <!-- Main App -->
+  <div id="app">
+    <div class="app-header">
+      <h1>Speed Read</h1>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-settings" title="Settings">&#9881;</button>
+        <button class="icon-btn" id="btn-lock" title="Lock">&#128274;</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="paste">Paste Text</div>
+      <div class="tab" data-tab="readwise">Readwise</div>
+    </div>
+
+    <!-- Paste Text Tab -->
+    <div class="tab-content active" id="tab-paste">
+      <textarea id="paste-area" placeholder="Paste or type text here to speed read..."></textarea>
+      <div class="paste-actions">
+        <button class="btn btn-primary" id="btn-read-paste">Start Reading</button>
+      </div>
+    </div>
+
+    <!-- Readwise Tab -->
+    <div class="tab-content" id="tab-readwise">
+      <div class="rw-auth" id="rw-auth">
+        <p>Connect your Readwise account to browse and speed-read your saved articles.</p>
+        <button class="btn btn-primary" id="btn-connect-rw">Set Up Readwise</button>
+      </div>
+      <div class="rw-browser hidden" id="rw-browser">
+        <div class="search-bar">
+          <input type="text" id="rw-search" placeholder="Search articles...">
+        </div>
+        <div class="loc-tabs">
+          <button class="loc-tab active" data-location="new">New</button>
+          <button class="loc-tab" data-location="later">Later</button>
+          <button class="loc-tab" data-location="shortlist">Shortlist</button>
+          <button class="loc-tab" data-location="archive">Archive</button>
+        </div>
+        <div class="articles" id="articles"></div>
+        <div class="loading hidden" id="rw-loading">Loading...</div>
+        <div class="load-more hidden" id="load-more">
+          <button id="btn-load-more">Load More</button>
+        </div>
+      </div>
+      <div class="status-bar" id="rw-status"></div>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div id="settings-panel">
+    <div class="settings-header">
+      <h2>Settings</h2>
+      <button class="icon-btn" id="btn-close-settings">&times;</button>
+    </div>
+    <div class="settings-body">
+      <div class="setting-group">
+        <h3>Readwise</h3>
+        <div class="setting-row">
+          <label>Token</label>
+          <input type="password" id="set-rw-token" placeholder="Readwise access token">
+        </div>
+        <p class="help-text">Get your token at <a href="https://readwise.io/access_token" target="_blank" rel="noopener">readwise.io/access_token</a></p>
+        <div class="setting-actions">
+          <button class="btn-sm primary" id="btn-save-token">Save</button>
+          <button class="btn-sm secondary" id="btn-test-token">Test</button>
+        </div>
+        <p class="setting-status" id="token-status"></p>
+      </div>
+
+      <div class="setting-group">
+        <h3>Reading</h3>
+        <div class="setting-row">
+          <label>WPM</label>
+          <input type="range" id="set-wpm" min="100" max="1200" step="50" value="300">
+          <span class="setting-value" id="set-wpm-val">300</span>
+        </div>
+        <div class="setting-row">
+          <label>Font Size</label>
+          <input type="range" id="set-font" min="36" max="120" step="4" value="72">
+          <span class="setting-value" id="set-font-val">72</span>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h3>Security</h3>
+        <div class="setting-actions">
+          <button class="btn-sm secondary" id="btn-change-pin">Change PIN</button>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <button class="btn-danger" id="btn-reset-all">Reset Everything</button>
+        <p class="help-text" style="margin-top:8px">Removes PIN, token, and all settings. You'll need to set up again.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="readwise.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
